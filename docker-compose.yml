@@ -1,10 +1,16 @@
-version: '3.8'
 services:
   metro:
-    build: .
+    # Usar la imagen ya construida para evitar reconstrucciones pesadas en este entorno
+    image: app_metro-metro
+    restart: unless-stopped
     ports:
       - "5000:5000"
     volumes:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+    # Para evitar problemas de import cuando gunicorn importa el módulo, usar el comando de desarrollo
+    # que ejecuta el script directamente (esto es equivalente a lo que usábamos inicialmente).
+    command: python metro_cdmx/main.py
+    # Nota: healthcheck puede permanecer, pero en entornos con cambios rápidos puede causar reinicios
+    # Si ves reinicios por healthcheck, coméntalo temporalmente.
